@@ -173,6 +173,16 @@
               },
               "blocks": {}
             },
+            "review": {
+              "type": "review",
+              "settings": {},
+              "blocks": {}
+            },
+            "product_intelligence": {
+              "type": "product-card-intelligence",
+              "settings": {},
+              "blocks": {}
+            },
             "price_EzJzMm": {
               "type": "price",
               "settings": {
@@ -208,7 +218,9 @@
           },
           "block_order": [
             "card-gallery",
+            "review",
             "product_title_4nY4eT",
+            "product_intelligence",
             "price_EzJzMm",
             "swatches"
           ]

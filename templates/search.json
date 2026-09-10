@@ -129,6 +129,16 @@
               },
               "blocks": {}
             },
+            "review": {
+              "type": "review",
+              "settings": {},
+              "blocks": {}
+            },
+            "product_intelligence": {
+              "type": "product-card-intelligence",
+              "settings": {},
+              "blocks": {}
+            },
             "price_fYkUgG": {
               "type": "price",
               "name": "t:names.product_price",
@@ -154,7 +164,9 @@
           },
           "block_order": [
             "product_card_gallery_cFExAi",
+            "review",
             "product_title_j7qXTx",
+            "product_intelligence",
             "price_fYkUgG"
           ]
         }

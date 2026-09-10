@@ -1,0 +1,91 @@
+{% doc %}
+  Renders optional theA2Zcart intelligence content in a product-card block.
+  The card's existing title, price, reviews, media, and purchase controls remain
+  separate Horizon blocks.
+{% enddoc %}
+
+{%- liquid
+  assign product = closest.product
+  assign benefits = product.metafields.thea2zcart.benefits.value
+-%}
+
+{%- capture short_promise -%}
+  {% render 'product-intelligence-field', product: product, field: 'short_promise' %}
+{%- endcapture -%}
+
+{%- capture benefit_items -%}
+  {%- for benefit in benefits -%}
+    {%- liquid
+      assign benefit_heading = benefit.heading.value | default: benefit.heading
+      assign benefit_body = benefit.body
+    -%}
+    {%- if benefit_heading != blank or benefit_body != blank -%}
+      <li class="product-card-intelligence__benefit">
+        {%- if benefit_heading != blank -%}
+          <span class="product-card-intelligence__benefit-heading">{{ benefit_heading | escape }}</span>
+        {%- endif -%}
+        {%- if benefit_body != blank and benefit_body.value != blank -%}
+          <span class="product-card-intelligence__benefit-body">{{ benefit_body | metafield_tag }}</span>
+        {%- endif -%}
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if short_promise != blank or benefit_items != blank -%}
+  <div class="product-card-intelligence" {{ block.shopify_attributes }}>
+    {%- if short_promise != blank -%}
+      <div class="product-card-intelligence__promise">{{ short_promise }}</div>
+    {%- endif -%}
+    {%- if benefit_items != blank -%}
+      <ul class="product-card-intelligence__benefits" role="list">
+        {{- benefit_items -}}
+      </ul>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-card-intelligence {
+    display: grid;
+    gap: var(--gap-xs);
+    width: 100%;
+  }
+
+  .product-card-intelligence__promise > :first-child,
+  .product-card-intelligence__benefit-body > :first-child {
+    margin-block-start: 0;
+  }
+
+  .product-card-intelligence__promise > :last-child,
+  .product-card-intelligence__benefit-body > :last-child {
+    margin-block-end: 0;
+  }
+
+  .product-card-intelligence__benefits {
+    display: grid;
+    gap: var(--gap-3xs);
+    margin: 0;
+    padding: 0;
+  }
+
+  .product-card-intelligence__benefit {
+    display: block;
+  }
+
+  .product-card-intelligence__benefit-heading {
+    font-weight: 600;
+  }
+
+  .product-card-intelligence__benefit-body > * {
+    display: inline;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product intelligence",
+  "tag": null,
+  "settings": []
+}
+{% endschema %}
