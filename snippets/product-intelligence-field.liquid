@@ -1,0 +1,28 @@
+{% doc %}
+  Renders a populated theA2Zcart product-intelligence metafield using Shopify's
+  native metafield renderer. It deliberately emits no wrapper or placeholder
+  when the requested product, field, or value is blank.
+
+  This is for displayable scalar and rich-text fields. For metaobject-reference
+  fields, assign the metafield directly in the consuming component so its
+  entries can be iterated and rendered with their own semantic markup.
+
+  @param {product} product - Product whose intelligence metafield is rendered.
+  @param {string} field - Key in the `thea2zcart` product metafield namespace.
+
+  @example
+  {% render 'product-intelligence-field', product: product, field: 'promise' %}
+{% enddoc %}
+
+{%- liquid
+  assign product_resource = product | default: closest.product
+  assign intelligence_field = blank
+
+  if product_resource != blank and field != blank
+    assign intelligence_field = product_resource.metafields.thea2zcart[field]
+  endif
+-%}
+
+{%- if intelligence_field != blank and intelligence_field.value != blank -%}
+  {{- intelligence_field | metafield_tag -}}
+{%- endif -%}
