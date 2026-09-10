@@ -16,7 +16,7 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
+            "text": "<h1>Useful finds for home, car &amp; bike.</h1><p>A small, practical collection selected to help with everyday life.</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -42,7 +42,7 @@
           "type": "button",
           "name": "t:names.button",
           "settings": {
-            "label": "Shop all",
+            "label": "Explore current finds",
             "link": "shopify://collections/all",
             "open_in_new_tab": false,
             "style_class": "button-custom",
@@ -127,7 +127,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<h2>Current finds</h2><p>A focused selection, updated as useful products are discovered.</p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -224,6 +224,16 @@
               },
               "blocks": {}
             },
+            "review": {
+              "type": "review",
+              "settings": {},
+              "blocks": {}
+            },
+            "product_intelligence": {
+              "type": "product-card-intelligence",
+              "settings": {},
+              "blocks": {}
+            },
             "price_JQzVV4": {
               "type": "price",
               "name": "t:names.product_price",
@@ -249,7 +259,9 @@
           },
           "block_order": [
             "product_card_gallery_677WP3",
+            "review",
             "product_title_YXxMTj",
+            "product_intelligence",
             "price_JQzVV4"
           ]
         }
@@ -259,7 +271,7 @@
         "collection": "all",
         "layout_type": "grid",
         "carousel_on_mobile": false,
-        "max_products": 8,
+        "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
@@ -273,10 +285,24 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "thea2zcart_category_routing": {
+      "type": "thea2zcart-category-routing",
+      "settings": {
+        "home_collection": "",
+        "car_bike_collection": "",
+        "heading": "Find what fits your day",
+        "text": "<p>Explore the collection that matches what you need right now.</p>",
+        "link_label": "Explore collection",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "product_list_fa6P9H",
+    "thea2zcart_category_routing"
   ]
 }
