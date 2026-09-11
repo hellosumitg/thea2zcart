@@ -17,8 +17,10 @@ Create the following Product metafield definitions in **Settings → Custom data
 | `problem` | Rich text | Customer problem or pain point. | No | Render nothing. |
 | `desire` | Rich text | Desired outcome or aspiration. | No | Render nothing. |
 | `benefits` | List of metaobject references: `a2z_content_item` | Ordered benefit statements, each with a heading/body and optional icon. | No | Render no benefit list. |
-| `mechanism` | Rich text | Concise explanation of why the product delivers its result. | No | Render nothing. |
 | `differentiators` | List of metaobject references: `a2z_content_item` | Product-specific distinctions that need a heading and explanation. | No | Render no differentiator list. |
+| `testimonials` | List of metaobject references: `a2z_content_item` | Real customer or verified testimonial entries, each with an optional heading and body. Never synthesized. | No | Render no testimonial list. |
+| `results` | List of metaobject references: `a2z_content_item` | Merchant-substantiated outcome statements for the product. Never synthesized from another product or a global default. | No | Render no results list. |
+| `mechanism` | Rich text | Concise explanation of why the product delivers its result. | No | Render nothing. |
 | `how_it_works` | Rich text | Step-by-step or explanatory product usage/process content. | No | Render nothing. |
 | `best_for` | List of single line text | Short audience or situation labels; lightweight and easy to reuse. | No | Render no labels. |
 | `use_cases` | List of single line text | Short use-case labels. | No | Render no labels. |
