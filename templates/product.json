@@ -241,12 +241,79 @@
               "type": "product-intelligence-reassurance",
               "settings": {},
               "blocks": {}
-            },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "t:names.product_description",
+            }
+          },
+          "block_order": [
+            "group_icgrde",
+            "product_intelligence_promise_kNQY51",
+            "product_intelligence_benefits_kNQY52",
+            "price_tVjtKg",
+            "divider_VJhene",
+            "variant_picker_R3rGDr",
+            "buy_buttons_eYQEYi",
+            "product_intelligence_reassurance_kNQY53"
+          ]
+        },
+        "disclosures": {
+          "type": "disclosures",
+          "settings": {
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "content_problem_desire_kNQY60": {
+          "type": "group",
+          "name": "Problem → Desire",
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "align_baseline": false,
+            "gap": 24,
+            "width": "fill",
+            "height": "fit",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_problem_kNQY61": {
+"type": "text",
+                  "name": "Problem",
               "settings": {
-                "text": "{{ closest.product.description }}",
+                "text": "{{ closest.product.metafields.thea2zcart.problem | metafield_tag }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_desire_kNQY62": {
+"type": "text",
+                  "name": "Desire",
+              "settings": {
+                "text": "{{ closest.product.metafields.thea2zcart.desire | metafield_tag }}",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -269,28 +336,67 @@
             }
           },
           "block_order": [
-            "group_icgrde",
-            "product_intelligence_promise_kNQY51",
-            "product_intelligence_benefits_kNQY52",
-            "price_tVjtKg",
-            "divider_VJhene",
-            "variant_picker_R3rGDr",
-            "buy_buttons_eYQEYi",
-            "product_intelligence_reassurance_kNQY53",
-            "text_aEtTtq"
+            "text_problem_kNQY61",
+            "text_desire_kNQY62"
           ]
         },
-        "disclosures": {
-          "type": "disclosures",
+        "product_intelligence_mechanism_kNQY63": {
+          "type": "product-intelligence-promise",
           "settings": {
+            "field": "mechanism",
+            "heading": "How it works"
+          },
+          "blocks": {}
+        },
+        "product_intelligence_differentiators_kNQY64": {
+          "type": "product-intelligence-benefits",
+          "settings": {
+            "field": "differentiators",
+            "heading": ""
+          },
+          "blocks": {}
+        },
+        "product_intelligence_how_to_use_kNQY65": {
+          "type": "product-intelligence-promise",
+          "settings": {
+            "field": "how_it_works",
+            "heading": "How to use"
+          },
+          "blocks": {}
+        },
+        "text_aEtTtq": {
+          "type": "text",
+          "name": "t:names.product_description",
+          "settings": {
+            "text": "{{ closest.product.description }}",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
             "padding-block-start": 0,
-            "padding-block-end": 0
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "disclosures"
+        "disclosures",
+        "content_problem_desire_kNQY60",
+        "product_intelligence_mechanism_kNQY63",
+        "product_intelligence_differentiators_kNQY64",
+        "product_intelligence_how_to_use_kNQY65",
+        "text_aEtTtq"
       ],
       "settings": {
         "content_width": "content-center-aligned",

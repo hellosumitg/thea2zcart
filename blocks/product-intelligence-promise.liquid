@@ -1,15 +1,17 @@
 {% doc %}
-  Renders the theA2Zcart product promise metafield (rich text) in the PDP
-  details column. Scalar/rich-text output goes through
-  snippets/product-intelligence-field.liquid. Everything is optional; no
-  wrapper, heading, or placeholder renders when the field is empty.
+  Renders a single theA2Zcart product metafield (rich text) with an optional
+  heading in the PDP. Scalar/rich-text output goes through
+  snippets/product-intelligence-field.liquid. The source field is chosen by the
+  block `field` setting (default `promise`). Everything is optional; no wrapper,
+  heading, or placeholder renders when the field is empty.
 {% enddoc %}
 
 {%- liquid
   assign product_resource = closest.product
+  assign field_key = block.settings.field | default: 'promise'
 
   capture promise_content
-    render 'product-intelligence-field', product: product_resource, field: 'promise'
+    render 'product-intelligence-field', product: product_resource, field: field_key
   endcapture
 -%}
 
@@ -46,9 +48,29 @@
 
 {% schema %}
 {
-  "name": "Product promise",
+  "name": "Intelligence field",
   "tag": null,
   "settings": [
+    {
+      "type": "select",
+      "id": "field",
+      "label": "Metafield",
+      "options": [
+        {
+          "value": "promise",
+          "label": "Promise"
+        },
+        {
+          "value": "mechanism",
+          "label": "Mechanism"
+        },
+        {
+          "value": "how_it_works",
+          "label": "How it works"
+        }
+      ],
+      "default": "promise"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -57,7 +79,7 @@
   ],
   "presets": [
     {
-      "name": "Product promise",
+      "name": "Intelligence field",
       "category": "t:categories.product"
     }
   ]

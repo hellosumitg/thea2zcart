@@ -1,13 +1,14 @@
 {% doc %}
-  Renders the theA2Zcart product benefits metafield list on the PDP details
-  column. Each entry is an `a2z_content_item` metaobject (optional heading,
-  optional rich-text body). Only entries with content render; the list renders
-  only when at least one entry has content.
+  Renders a theA2Zcart `a2z_content_item` metafield list on the PDP. Each entry
+  is a metaobject (optional heading, optional rich-text body). Only entries with
+  content render; the list renders only when at least one entry has content. The
+  source field is chosen by the block `field` setting (default `benefits`).
 {% enddoc %}
 
 {%- liquid
   assign product_resource = closest.product
-  assign benefits = product_resource.metafields.thea2zcart.benefits.value
+  assign field_key = block.settings.field | default: 'benefits'
+  assign benefits = product_resource.metafields.thea2zcart[field_key].value
 -%}
 
 {%- capture benefit_items -%}
@@ -82,9 +83,25 @@
 
 {% schema %}
 {
-  "name": "Product benefits",
+  "name": "Intelligence list",
   "tag": null,
   "settings": [
+    {
+      "type": "select",
+      "id": "field",
+      "label": "Metafield",
+      "options": [
+        {
+          "value": "benefits",
+          "label": "Benefits"
+        },
+        {
+          "value": "differentiators",
+          "label": "Differentiators"
+        }
+      ],
+      "default": "benefits"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -93,7 +110,7 @@
   ],
   "presets": [
     {
-      "name": "Product benefits",
+      "name": "Intelligence list",
       "category": "t:categories.product"
     }
   ]
