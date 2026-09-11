@@ -1,0 +1,81 @@
+{% doc %}
+  Renders the theA2Zcart shipping and guarantee metafields (both rich text,
+  both optional) in the PDP details column. Renders nothing when both fields
+  are empty. Scalar/rich-text output goes through
+  snippets/product-intelligence-field.liquid.
+{% enddoc %}
+
+{%- liquid
+  assign product_resource = closest.product
+
+  capture shipping_content
+    render 'product-intelligence-field', product: product_resource, field: 'shipping_message'
+  endcapture
+
+  capture guarantee_content
+    render 'product-intelligence-field', product: product_resource, field: 'guarantee'
+  endcapture
+-%}
+
+{%- if shipping_content != blank or guarantee_content != blank -%}
+  <div class="product-intelligence-reassurance" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <h2 class="product-intelligence-reassurance__heading h4">{{ block.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- if shipping_content != blank -%}
+      <div class="product-intelligence-reassurance__row rte">
+        {{ shipping_content }}
+      </div>
+    {%- endif -%}
+    {%- if guarantee_content != blank -%}
+      <div class="product-intelligence-reassurance__row rte">
+        {{ guarantee_content }}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-intelligence-reassurance {
+    display: grid;
+    gap: var(--gap-md);
+    width: 100%;
+  }
+
+  .product-intelligence-reassurance__heading {
+    margin-block-end: 0;
+  }
+
+  .product-intelligence-reassurance__row {
+    display: grid;
+    gap: var(--gap-3xs);
+  }
+
+  .product-intelligence-reassurance__row .metafield-rich_text_field > :first-child {
+    margin-block-start: 0;
+  }
+
+  .product-intelligence-reassurance__row .metafield-rich_text_field > :last-child {
+    margin-block-end: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shipping & guarantee",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shipping & guarantee",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

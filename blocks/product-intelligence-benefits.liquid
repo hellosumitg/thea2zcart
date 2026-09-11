@@ -1,0 +1,101 @@
+{% doc %}
+  Renders the theA2Zcart product benefits metafield list on the PDP details
+  column. Each entry is an `a2z_content_item` metaobject (optional heading,
+  optional rich-text body). Only entries with content render; the list renders
+  only when at least one entry has content.
+{% enddoc %}
+
+{%- liquid
+  assign product_resource = closest.product
+  assign benefits = product_resource.metafields.thea2zcart.benefits.value
+-%}
+
+{%- capture benefit_items -%}
+  {%- for benefit in benefits -%}
+    {%- liquid
+      assign benefit_heading = benefit.heading.value | default: benefit.heading
+      assign benefit_body = benefit.body
+    -%}
+    {%- if benefit_heading != blank or benefit_body != blank -%}
+      <li class="product-intelligence-benefits__item">
+        {%- if benefit_heading != blank -%}
+          <span class="product-intelligence-benefits__item-heading">{{ benefit_heading | escape }}</span>
+        {%- endif -%}
+        {%- if benefit_body != blank and benefit_body.value != blank -%}
+          <span class="product-intelligence-benefits__item-body">{{ benefit_body | metafield_tag }}</span>
+        {%- endif -%}
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if benefit_items != blank -%}
+  <div class="product-intelligence-benefits" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <h2 class="product-intelligence-benefits__heading h4">{{ block.settings.heading | escape }}</h2>
+    {%- endif -%}
+    <ul class="product-intelligence-benefits__list" role="list">
+      {{ benefit_items }}
+    </ul>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-intelligence-benefits {
+    display: grid;
+    gap: var(--gap-xs);
+    width: 100%;
+  }
+
+  .product-intelligence-benefits__heading {
+    margin-block-end: 0;
+  }
+
+  .product-intelligence-benefits__list {
+    display: grid;
+    gap: var(--gap-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-intelligence-benefits__item {
+    display: block;
+  }
+
+  .product-intelligence-benefits__item-heading {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .product-intelligence-benefits__item-body > * {
+    display: inline;
+  }
+
+  .product-intelligence-benefits__item-body .metafield-rich_text_field > :first-child {
+    margin-block-start: 0;
+  }
+
+  .product-intelligence-benefits__item-body .metafield-rich_text_field > :last-child {
+    margin-block-end: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product benefits",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product benefits",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

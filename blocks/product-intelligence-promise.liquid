@@ -1,0 +1,65 @@
+{% doc %}
+  Renders the theA2Zcart product promise metafield (rich text) in the PDP
+  details column. Scalar/rich-text output goes through
+  snippets/product-intelligence-field.liquid. Everything is optional; no
+  wrapper, heading, or placeholder renders when the field is empty.
+{% enddoc %}
+
+{%- liquid
+  assign product_resource = closest.product
+
+  capture promise_content
+    render 'product-intelligence-field', product: product_resource, field: 'promise'
+  endcapture
+-%}
+
+{%- if promise_content != blank -%}
+  <div class="product-intelligence-promise" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <h2 class="product-intelligence-promise__heading h4">{{ block.settings.heading | escape }}</h2>
+    {%- endif -%}
+    <div class="product-intelligence-promise__content rte">
+      {{ promise_content }}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-intelligence-promise {
+    display: grid;
+    gap: var(--gap-xs);
+    width: 100%;
+  }
+
+  .product-intelligence-promise__heading {
+    margin-block-end: 0;
+  }
+
+  .product-intelligence-promise__content .metafield-rich_text_field > :first-child {
+    margin-block-start: 0;
+  }
+
+  .product-intelligence-promise__content .metafield-rich_text_field > :last-child {
+    margin-block-end: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product promise",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product promise",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

@@ -103,6 +103,17 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "review_kNQY4V": {
+                  "type": "review",
+                  "settings": {
+                    "stars_style": "shaded",
+                    "show_number": true,
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left"
+                  },
+                  "blocks": {}
+                },
                 "text_xpVMaM": {
                   "type": "text",
                   "name": "t:names.title",
@@ -127,33 +138,43 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {}
-                },
-                "price_tVjtKg": {
-                  "type": "price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": true,
-                    "show_tax_info": true,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "padding-block-start": 4,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
                 }
               },
               "block_order": [
-                "text_xpVMaM",
-                "price_tVjtKg"
+                "review_kNQY4V",
+                "text_xpVMaM"
               ]
+            },
+            "product_intelligence_promise_kNQY51": {
+              "type": "product-intelligence-promise",
+              "settings": {},
+              "blocks": {}
+            },
+            "product_intelligence_benefits_kNQY52": {
+              "type": "product-intelligence-benefits",
+              "settings": {},
+              "blocks": {}
+            },
+            "price_tVjtKg": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": true,
+                "show_tax_info": true,
+                "type_preset": "paragraph",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             },
             "divider_VJhene": {
               "type": "_divider",
@@ -216,6 +237,11 @@
               },
               "block_order": []
             },
+            "product_intelligence_reassurance_kNQY53": {
+              "type": "product-intelligence-reassurance",
+              "settings": {},
+              "blocks": {}
+            },
             "text_aEtTtq": {
               "type": "text",
               "name": "t:names.product_description",
@@ -244,9 +270,13 @@
           },
           "block_order": [
             "group_icgrde",
+            "product_intelligence_promise_kNQY51",
+            "product_intelligence_benefits_kNQY52",
+            "price_tVjtKg",
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
+            "product_intelligence_reassurance_kNQY53",
             "text_aEtTtq"
           ]
         },
