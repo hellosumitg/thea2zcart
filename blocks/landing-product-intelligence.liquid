@@ -1,0 +1,320 @@
+{% doc %}
+  Renders one populated theA2Zcart product-intelligence metafield as a reusable
+  module for awareness-specific landing pages. The source product is chosen by
+  the block Product setting and falls back to the current product page's product
+  when the block is used on a product template.
+
+  The source field is chosen by the block Field setting:
+  - Rich text (education, problem, desire, mechanism, promise, how_it_works,
+    shipping_message, guarantee) renders with Shopify's native metafield
+    renderer.
+  - Content-item lists (benefits, differentiators, testimonials, results)
+    render as an item list using the shared a2z_content_item contract
+    (optional heading + optional rich-text body).
+  - Single-line lists (best_for, use_cases) render as a simple list.
+  - A metaobject reference (comparison) renders with the native renderer.
+
+  Everything is optional and empty-safe: when the product, field, or value is
+  blank (or every list entry is blank), the module emits nothing - no heading,
+  no wrapper, no placeholder.
+{% enddoc %}
+
+{%- liquid
+  assign product_resource = block.settings.product | default: closest.product
+  assign field_key = block.settings.field | default: 'promise'
+
+  assign rich_text_fields = 'education,problem,desire,mechanism,promise,how_it_works,shipping_message,guarantee,comparison' | split: ','
+  assign content_item_fields = 'benefits,differentiators,testimonials,results' | split: ','
+  assign simple_list_fields = 'best_for,use_cases' | split: ','
+
+  assign is_rich_text = false
+  if rich_text_fields contains field_key
+    assign is_rich_text = true
+  endif
+  assign is_content_items = false
+  if content_item_fields contains field_key
+    assign is_content_items = true
+  endif
+  assign is_simple_list = false
+  if simple_list_fields contains field_key
+    assign is_simple_list = true
+  endif
+
+  assign intelligence_field = blank
+  if product_resource != blank and field_key != blank
+    assign intelligence_field = product_resource.metafields.thea2zcart[field_key]
+  endif
+-%}
+
+{%- capture rendered_content -%}
+  {%- if intelligence_field != blank and intelligence_field.value != blank -%}
+    {%- if is_rich_text -%}
+      {{ intelligence_field | metafield_tag }}
+    {%- elsif is_content_items -%}
+      <ul class="landing-product-intelligence__list" role="list">
+        {%- for item in intelligence_field.value -%}
+          {%- liquid
+            assign item_heading = item.heading.value | default: item.heading
+            assign item_body = item.body
+          -%}
+          {%- if item_heading != blank or item_body != blank -%}
+            <li class="landing-product-intelligence__item">
+              {%- if item_heading != blank -%}
+                <span class="landing-product-intelligence__item-heading">{{ item_heading | escape }}</span>
+              {%- endif -%}
+              {%- if item_body != blank and item_body.value != blank -%}
+                <span class="landing-product-intelligence__item-body">{{ item_body | metafield_tag }}</span>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- elsif is_simple_list -%}
+      <ul class="landing-product-intelligence__list" role="list">
+        {%- for item in intelligence_field.value -%}
+          {%- if item != blank -%}
+            <li class="landing-product-intelligence__item">{{ item | escape }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if rendered_content != blank -%}
+  <div
+    class="landing-product-intelligence{% if block.settings.alignment == 'center' %} landing-product-intelligence--center{% endif %}{% if block.settings.max_width == 'narrow' %} landing-product-intelligence--narrow{% endif %}"
+    style="{% render 'spacing-style', settings: block.settings %}"
+    {{ block.shopify_attributes }}
+  >
+    {%- if block.settings.heading != blank -%}
+      {% case block.settings.heading_type %}
+        {%- when 'h1' -%}<h1 class="landing-product-intelligence__heading h4">{{ block.settings.heading | escape }}</h1>
+        {%- when 'h2' -%}<h2 class="landing-product-intelligence__heading h4">{{ block.settings.heading | escape }}</h2>
+        {%- when 'h3' -%}<h3 class="landing-product-intelligence__heading h4">{{ block.settings.heading | escape }}</h3>
+        {%- when 'h4' -%}<h4 class="landing-product-intelligence__heading h4">{{ block.settings.heading | escape }}</h4>
+      {% endcase %}
+    {%- endif -%}
+    <div class="landing-product-intelligence__content rte">{{ rendered_content }}</div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .landing-product-intelligence {
+    display: grid;
+    gap: var(--gap-sm);
+  }
+
+  .landing-product-intelligence--narrow {
+    max-width: var(--narrow-content-width);
+  }
+
+  .landing-product-intelligence--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .landing-product-intelligence__heading {
+    margin-block: 0;
+  }
+
+  .landing-product-intelligence__content > :first-child {
+    margin-block-start: 0;
+  }
+
+  .landing-product-intelligence__content > :last-child {
+    margin-block-end: 0;
+  }
+
+  .landing-product-intelligence__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--gap-sm);
+  }
+
+  .landing-product-intelligence__item {
+    display: grid;
+    gap: var(--gap-3xs);
+  }
+
+  .landing-product-intelligence__item-heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .landing-product-intelligence__item-body {
+    display: block;
+  }
+
+  .landing-product-intelligence__item-body .metafield-rich_text_field > :first-child {
+    margin-block-start: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product intelligence",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "select",
+      "id": "field",
+      "label": "Metafield",
+      "options": [
+        {
+          "value": "education",
+          "label": "Education"
+        },
+        {
+          "value": "problem",
+          "label": "Problem"
+        },
+        {
+          "value": "desire",
+          "label": "Desired outcome"
+        },
+        {
+          "value": "mechanism",
+          "label": "Mechanism"
+        },
+        {
+          "value": "promise",
+          "label": "Promise"
+        },
+        {
+          "value": "how_it_works",
+          "label": "How it works"
+        },
+        {
+          "value": "benefits",
+          "label": "Benefits"
+        },
+        {
+          "value": "differentiators",
+          "label": "Differentiators"
+        },
+        {
+          "value": "testimonials",
+          "label": "Testimonials"
+        },
+        {
+          "value": "results",
+          "label": "Results"
+        },
+        {
+          "value": "best_for",
+          "label": "Best for"
+        },
+        {
+          "value": "use_cases",
+          "label": "Use cases"
+        },
+        {
+          "value": "comparison",
+          "label": "Comparison"
+        },
+        {
+          "value": "shipping_message",
+          "label": "Shipping"
+        },
+        {
+          "value": "guarantee",
+          "label": "Guarantee"
+        }
+      ],
+      "default": "promise"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_type",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "full",
+          "label": "Full"
+        }
+      ],
+      "default": "narrow"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}
