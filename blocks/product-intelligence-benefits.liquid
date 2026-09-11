@@ -3,6 +3,11 @@
   is a metaobject (optional heading, optional rich-text body). Only entries with
   content render; the list renders only when at least one entry has content. The
   source field is chosen by the block `field` setting (default `benefits`).
+
+  Supported fields: benefits (product advantages), differentiators (brand
+  differentiators), testimonials (customer quotes / social proof), results
+  (evidence / proof statistics). All use the same a2z_content_item metaobject
+  contract (heading + body) and the same empty-safe rendering path.
 {% enddoc %}
 
 {%- liquid
@@ -98,6 +103,14 @@
         {
           "value": "differentiators",
           "label": "Differentiators"
+        },
+        {
+          "value": "testimonials",
+          "label": "Testimonials"
+        },
+        {
+          "value": "results",
+          "label": "Results"
         }
       ],
       "default": "benefits"
