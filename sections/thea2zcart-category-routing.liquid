@@ -1,12 +1,12 @@
 {% liquid
+  assign collection_keys = 'home_collection,car_bike_collection,collection_3,collection_4' | split: ','
   assign has_categories = false
-  assign collection_keys = 'home_collection,car_bike_collection' | split: ','
-  if section.settings.home_collection != blank and section.settings.home_collection.products_count > 0
-    assign has_categories = true
-  endif
-  if section.settings.car_bike_collection != blank and section.settings.car_bike_collection.products_count > 0
-    assign has_categories = true
-  endif
+  for collection_key in collection_keys
+    assign configured_collection = section.settings[collection_key]
+    if configured_collection != blank and configured_collection.products_count > 0
+      assign has_categories = true
+    endif
+  endfor
 %}
 
 {% if has_categories %}
@@ -54,6 +54,8 @@
   "settings": [
     { "type": "collection", "id": "home_collection", "label": "Home collection" },
     { "type": "collection", "id": "car_bike_collection", "label": "Car & Bike collection" },
+    { "type": "collection", "id": "collection_3", "label": "Collection 3" },
+    { "type": "collection", "id": "collection_4", "label": "Collection 4" },
     { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Find what fits your day" },
     { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Explore the collection that matches what you need right now.</p>" },
     { "type": "text", "id": "link_label", "label": "Link label", "default": "Explore collection" },
