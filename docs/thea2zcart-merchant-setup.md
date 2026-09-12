@@ -585,4 +585,48 @@ work is separate from store operation):
 Everything a visitor sees for a product comes from: (1) Shopify native product
 data, (2) `thea2zcart` metafields, (3) Theme Editor block configuration. The
 theme contains **no** hard-coded product names, handles, IDs, categories,
-types, industries, use cases, journeys, claims, or product counts.**
+types, industries, use cases, journeys, claims, or product counts.
+
+## 27. India operating model (launch configuration)
+
+Merchant-specific operating configuration for the business's actual Indian
+setup. All values below are **MERCHANT MUST PROVIDE** — nothing here invents
+rates, tax registration, or payment capability. Where external input is needed
+(CA/accountant), it is marked CONFIGURATION REQUIRED. Everything is Admin
+configuration; no theme code changes.
+
+### Shipping (domestic India)
+
+Admin → Settings → Shipping and delivery:
+
+1. Create an **India domestic shipping zone**.
+2. Add the merchant's actual rates/carriers (standard, expedited as actually offered).
+3. If free shipping is genuinely offered, add the matching rate rule (e.g., free over a threshold) so the expressed threshold matches checkout exactly — no surprise shipping charge.
+4. Delivery expectations: state realistic windows only where the merchant stands behind them, in the Shipping policy and/or the product `shipping_message` metafield. Never invent courier promise times.
+5. COD: enable Cash on Delivery **only** if the merchant actually accepts it; otherwise leave disabled and say so in the policy. COD charges must match policy text.
+
+### Tax (GST)
+
+Admin → Settings → Taxes and duties. **CONFIGURATION REQUIRED — CA/accountant input}:**
+
+1. Set up the merchant's actual tax situation (e.g., registered GST: IGST across states, CGST+SGST within a state; or tax-exempt/pending registration).
+2. If product HSN codes are recorded, add them per product (product → variants → HS/HTS code).
+3. If tax registration is pending or inapplicable, keep tax collection off accordingly and confirm with the accountant before launch.
+4. Never display an unverified tax registration number on the storefront.
+
+### Payments (India)
+
+Admin → Settings → Payments:
+
+1. **Prepaid:** enable UPI, cards, and netbanking through the merchant's chosen provider (Shopify Payments where available in India, or an accredited payment gateway).
+2. **COD:** enable only if actually offered (see shipping).
+3. Payment-failure handling: confirm provider messages/retry behavior at checkout.
+4. Currency: set INR under Store details; markets/presentment only if multi-currency is used.
+5. **Never claim a payment method works until it is tested** with a real end-to-end order (external live-QA gate).
+
+### Storefront consistency
+
+Every policy statement (shipping, returns, payments, refunds) must match the
+configured settings — checkout behavior, rates, taxes, and payment methods must
+never contradict the policy text. Support email and response expectations are
+merchant-defined.**
