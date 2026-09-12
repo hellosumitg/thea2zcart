@@ -16,7 +16,7 @@
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<h1>Useful finds for home, car &amp; bike.</h1><p>A small, practical collection selected to help with everyday life.</p>",
+            "text": "<h1>Small collection, curated finds.</h1><p>A focused selection, updated regularly with practical products worth your attention.</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
