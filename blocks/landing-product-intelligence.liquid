@@ -12,7 +12,11 @@
     render as an item list using the shared a2z_content_item contract
     (optional heading + optional rich-text body).
   - Single-line lists (best_for, use_cases) render as a simple list.
-  - A metaobject reference (comparison) renders with the native renderer.
+
+  Metaobject-reference fields without an automated renderer (comparison), like
+  faq, remain data-contract fields without a block-level consumer (see
+  docs/thea2zcart-product-intelligence.md); they are intentionally not offered
+  in the Field setting.
 
   Everything is optional and empty-safe: when the product, field, or value is
   blank (or every list entry is blank), the module emits nothing - no heading,
@@ -23,7 +27,7 @@
   assign product_resource = block.settings.product | default: closest.product
   assign field_key = block.settings.field | default: 'promise'
 
-  assign rich_text_fields = 'education,problem,desire,mechanism,promise,how_it_works,shipping_message,guarantee,comparison' | split: ','
+  assign rich_text_fields = 'education,problem,desire,mechanism,promise,how_it_works,shipping_message,guarantee' | split: ','
   assign content_item_fields = 'benefits,differentiators,testimonials,results' | split: ','
   assign simple_list_fields = 'best_for,use_cases' | split: ','
 
@@ -214,10 +218,6 @@
         {
           "value": "use_cases",
           "label": "Use cases"
-        },
-        {
-          "value": "comparison",
-          "label": "Comparison"
         },
         {
           "value": "shipping_message",
