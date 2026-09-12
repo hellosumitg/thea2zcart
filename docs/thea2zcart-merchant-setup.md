@@ -1,291 +1,588 @@
-# theA2Zcart merchant setup
+# theA2Zcart merchant operating guide
 
-Practical operating documentation for the theA2Zcart storefront. The theme is
-product-agnostic: products are created, edited, published, or unpublished
-entirely from Shopify Admin, with **no theme code changes** required. This
-document is written so the store can be operated without a developer.
+Practical, complete operating documentation for the theA2Zcart storefront. It
+is written so the store can be operated entirely from **Shopify Admin** without
+a developer and without touching theme code.
 
 The canonical product-intelligence contract is
 [`docs/thea2zcart-product-intelligence.md`](./thea2zcart-product-intelligence.md).
-This document references it rather than duplicating it.
+This guide references it instead of duplicating it.
+
+The theme is **product-agnostic and modular**. The storefront intentionally
+merchandises a small catalog (today, four active products), but that is only a
+merchandising decision. The theme supports 0, 1, 2, 3, 4, 8, 20+ products
+without code changes. Products are added, removed, replaced, unpublished,
+republished, and edited through **Admin → Products → Add product**. Nothing
+that follows creates a technical limit.
 
 ---
 
-## A. Shop setup
+## 1. Merchant vs. code responsibility
 
-Complete once during onboarding:
+| Area | Owner | How |
+| --- | --- | --- |
+| Products, prices, variants, inventory, media | Merchant | Admin → Products |
+| Product collections | Merchant | Admin → Collections |
+| Navigation menus | Merchant | Admin → Content → Menus (Online Store → Navigation) |
+| Policy pages | Merchant | Admin → Settings → Policies (real business terms only) |
+| Generic/static pages | Merchant | Admin → Content → Pages |
+| Blog (optional) | Merchant | Admin → Content → Blog posts |
+| Product metafields (`thea2zcart`) | Merchant | Admin → Settings → Custom data → Products |
+| Metaobjects | Merchant | Admin → Settings → Custom data (create only when used) |
+| Theme Editor configuration | Merchant | Online Store → Themes → Customize |
+| Shipping, taxes, payments | Merchant | Admin → Settings |
+| Customer accounts mode | Merchant | Admin → Settings → Customers & accounts (Shopify-hosted pages; no `customers/*` templates needed) |
+| Analytics pixels (GA4, Meta) + consent | Merchant | Admin → Settings → Marketing / Sales channels |
+| Domain, password/launch state | Merchant | Admin |
+| Theme architecture, reusable components, bugs, unsupported needs, measured improvements | Code (only when genuinely necessary) | Strictly needed theme work only |
 
-1. Shop details (name, address, currency, timezone, weights/units) — Admin → Settings → Store details.
-2. Payment providers — Admin → Settings → Payments (checkout/purchase are Shopify-native; the theme does not alter them).
-3. Checkout — Admin → Settings → Checkout (page established, order processing, post-purchase). These are native pages, not theme files.
-4. Taxes & duties — Admin → Settings → Taxes and duties (use merchant rules; the theme makes no tax claims).
-5. Physical stores / shipping — Admin → Settings → Shipping and delivery (carriers, rates, packaging). Product-specific shipping *copy* lives in the `thea2zcart` `shipping_message` metafield, never in theme code.
-6. Customer accounts mode — Admin → Settings → Customers & accounts (select account type; account pages are Shopify-hosted, not theme templates).
-7. Marketing preferences / consent — Admin → Settings → Marketing preferences and the consent banner provider (gates Shopify Standard Events per customer consent).
-8. Gift cards — Admin → Settings → Gift cards (toggle on if offered; the native gift card page exists in the theme).
-9. Blog — Admin → Settings → Preferences (enable if blog used; native blog/article surfaces exist in the theme).
-10. Homepage formalization (onboarding mode off) when ready to go live.
+Normal product creation or replacement **must never require Codex**.
 
-## B. Product creation workflow
+## 2. Shop setup
 
-Products are managed exactly like any Shopify store. Adding a product never
-requires code.
+1. Store details (name, address, currency, timezone, weights/units) — Admin → Settings → Store details.
+2. Payments — Admin → Settings → Payments (checkout/purchase are Shopify-native; the theme never alters them).
+3. Checkout — Admin → Settings → Checkout.
+4. Taxes & duties — Admin → Settings → Taxes and duties (merchant rules; theme makes no tax claims).
+5. Shipping — Admin → Settings → Shipping and delivery (carriers, rates, packaging, locations). Product-specific shipping *copy* lives in the `shipping_message` metafield.
+6. Customer accounts mode — Admin → Settings → Customers & accounts.
+7. Marketing preferences / consent — Admin → Settings → Marketing preferences + consent banner provider (gates Shopify Standard Events per consent).
+8. Gift cards — Admin → Settings → Gift cards (native gift card page exists in the theme).
+9. Blog — Admin → Settings → Preferences (native blog/article surfaces exist).
+10. Domain — Admin → Settings → Domains (confirm `thea2zcart.com` primary, SSL active).
+11. Contact — Admin → Settings → Contact (customer-support email live before launch).
+12. Homepage formalization (onboarding mode off) when ready to go live.
 
-1. Admin → Products → Add product.
-2. Add title.
-3. Add product description (native PDP field).
-4. Add media (first image becomes the card/hero image).
-5. Add price (and compare-at price if applicable).
-6. Add variants, option names/values if applicable.
-7. Configure inventory and shipping (physical product, track, SKU/barcode).
-8. Add SEO title/description if desired (native).
-9. Publish (Online Store sales channel, Online Store sales channel map if using markets).
-10. Add the product to the relevant collection(s) (section E).
-11. Populate relevant theA2Zcart product-intelligence metafields (section C) — optional; empty fields simply render nothing.
-12. Preview the PDP, the product card on collection/search/homepage, and any awareness page that points at this product.
-13. Test Add to cart, cart drawer, and checkout handoff.
-14. Publish.
+## 3. Product creation workflow
 
-A completely new product follows this workflow. The product-agnostic rule:
-**nothing anywhere in the theme references a product by name, handle, id,
-type, category, or count.**
+**Any** future product. **No theme code change is ever required.**
 
-## C. Product intelligence metafields
+1. Admin → Products → Add product
+2. Core information: title, product type, vendor (native fields)
+3. Description (native PDP rich text)
+4. Media: first image becomes the card/hero image; add additional images/video as real media
+5. Pricing: price; compare-at price only when a real discount exists
+6. Variants: one option ("Title") if single variant; option name/value pairs if multi-variant; variant price, compare-at as applicable
+7. Inventory: track or don't track; SKU/barcode as applicable (per product policy)
+8. Shipping: weight/dimensions/HS code as applicable
+9. SEO: page title, meta description (native)
+10. Publish to the Online Store sales channel
+11. Assign to the appropriate collection(s) (section 6)
+12. Populate optional theA2Zcart product-intelligence fields (section 4) — real content only; empty fields render nothing
+13. Preview the storefront PDP
+14. Verify the product card (homepage/collection/search)
+15. Verify the collection page rendering
+16. Verify search finds the product
+17. Verify homepage merchandising if the product is assigned to the homepage list/category routing
+18. Verify recommendation surfaces (product page "related" recommendations)
+19. Test Add to cart, cart drawer, cart page, checkout handoff
+20. Publish state confirmed live
 
-Create Product metafield definitions in **Admin → Settings → Custom data →
-Products** using namespace `thea2zcart`. The authoritative field table
-(name, type, purpose, fallback) is the product-intelligence contract document.
+## 4. Product intelligence — Admin foundation
 
-Every field is optional. Never populate a field with placeholder, invented,
-or cross-product content. "Keep empty" always means "no component renders
-anything for it."
+Define Product metafields in **Admin → Settings → Custom data → Products** in
+namespace **`thea2zcart`** (key = field name below). Authoritative contract:
+`docs/thea2zcart-product-intelligence.md`.
 
-| Field | Type (Admin definition) | Consumed by | Keep empty unless... |
-| --- | --- | --- | --- |
-| `promise` | Rich text | PDP intelligence-field block | you have real value-proposition copy |
-| `short_promise` | Single line text | Product card intelligence (card block) | you want a compact card line |
-| `problem` | Rich text | PDP problem block; education/problem-aware pages | you have honest problem copy |
-| `desire` | Rich text | PDP desire block; education/problem-aware pages | you have honest desired-outcome copy |
-| `mechanism` | Rich text | PDP mechanism block; education/solution-aware pages | it genuinely explains why the product works |
-| `how_it_works` | Rich text | PDP how-to-use block | there are real usage steps |
-| `education` | Rich text | education landing page | there is real educational content |
-| `shipping_message` | Rich text | PDP shipping & guarantee block | it reflects actual shipping expectations |
-| `guarantee` | Rich text | PDP shipping & guarantee block | it reflects the actual guarantee |
-| `best_for` | List of single line text | Intelligence list (choose field) | you have audience labels |
-| `use_cases` | List of single line text | Intelligence list (choose field) | you have use-case labels |
-| `badges` | List of single line text | Product card gallery badges | you have real, non-regulatory badges |
-| `benefits` | List of references: `a2z_content_item` | PDP intelligence list; product card | each entry is a real product benefit |
-| `differentiators` | List of references: `a2z_content_item` | PDP intelligence list | entries are real distinctions |
-| `testimonials` | List of references: `a2z_content_item` | PDP intelligence list; education/solution-aware/offer pages | entries are genuine, non-synthesized quotes |
-| `results` | List of references: `a2z_content_item` | PDP intelligence list; problem-aware page | entries are merchant-substantiated outcomes |
-| `faq` | List of references: `a2z_faq_item` | data contract (no active block consumer) | you build a section that consumes it |
-| `comparison` | Reference: `a2z_comparison_table` | data contract (no active block consumer) | you build a section that consumes it |
+Every field is optional. Blank always means "no component renders anything."
 
-`faq` and `comparison` are contracts, not built-in sections. FAQ is natively
-covered by the theme's collapsible/content blocks; a comparison table would be
-a future, deliberately designed section. Do not store FAQ or comparison markup
-inside the other fields to force rendering.
+| Key | Type | Purpose | Consumed on | Never put here |
+| --- | --- | --- | --- | --- |
+| `promise` | Rich text | Core value proposition | PDP promise block; awareness pages | invented claims, hype |
+| `short_promise` | Single line text | Compact card line | product card intelligence | truncated `promise`, invented taglines |
+| `problem` | Rich text | The real customer problem | PDP problem block; education/problem-aware | invented pain points |
+| `desire` | Rich text | Desired outcome | PDP desire block; education/problem-aware | invented outcomes/aspirations |
+| `mechanism` | Rich text | Why it works | PDP mechanism block; education/solution-aware | speculative or scientific-sounding claims |
+| `how_it_works` | Rich text | Real usage steps | PDP how-to-use block | fake steps |
+| `education` | Rich text | Educational content | education page | unsupported claims |
+| `shipping_message` | Rich text | Product-specific delivery note | PDP shipping & guarantee block | invented delivery times (match policy) |
+| `guarantee` | Rich text | Real guarantee/risk-reduction | PDP shipping & guarantee block | invented guarantees (match policy) |
+| `best_for` | List of single line | Audience labels | intelligence list (pick field) | invented audiences |
+| `use_cases` | List of single line | Use-case labels | intelligence list (pick field) | invented scenarios |
+| `badges` | List of single line | Non-regulatory merchandising badges | product card gallery | regulatory/safety claims (use native disclosures) |
+| `benefits` | List: `a2z_content_item` | Benefit statements | PDP intelligence list; product card | fabricated benefits |
+| `differentiators` | List: `a2z_content_item` | Real distinctions | PDP intelligence list | invented distinctions |
+| `testimonials` | List: `a2z_content_item` | Genuine customer quotes | PDP intelligence list; education/solution-aware/offer | synthesized/fake quotes, UGC |
+| `results` | List: `a2z_content_item` | Substantiated outcomes | PDP intelligence list; problem-aware | made-up stats/counts |
+| `faq` | List: `a2z_faq_item` | Product FAQ (contract) | no active block consumer | FAQ markup shoved into other fields |
+| `comparison` | Reference: `a2z_comparison_table` | Structured comparison (contract) | no active block consumer | table markup stored in the product |
 
-### Content-integrity rules (apply to every product)
+`faq` and `comparison` are **contracts**, not built-in sections — do **not**
+create a custom renderer for them now. FAQ is natively coverable with the
+theme's collapsible/content blocks if the merchant chooses. Create entries only
+when real FAQ/comparison needs exist.
 
-- Leave unsupported claims empty. Never invent reviews, testimonials, results,
-  ratings, customer counts, scientific claims, urgency, or scarcity.
-- Preview-only rating defaults in the review block are limited to Shopify's
-  visual-preview mode and never appear on live pages.
-- Never infer a product's information from its collection, category, or the
-  presence of another product.
-- Regulatory disclosures remain the native `shopify` disclosures; the
-  theA2Zcart merchandising fields never substitute for a required disclosure.
+### Content-integrity rules
 
-## D. Metaobjects
+- Never invent: reviews, testimonials, results, ratings, customer counts,
+  scientific claims, urgency, scarcity, guarantees, shipping promises, or
+  product categories.
+- Never reuse another product's intelligence content or a global default; every
+  field is product-specific.
+- Never infer product information from its collection/category.
+- Preview-only rating defaults in the review block exist only in Shopify
+  visual-preview mode and never appear live.
+- Regulatory/safety disclosures remain the native Shopify disclosure fields;
+  merchandising fields never replace them.
 
-Create these definitions in **Admin → Settings → Custom data** only if a
-product uses the corresponding field. Keep each reference metafield constrained
+## 5. Metaobject operating model
+
+Create metaobject definitions in Admin → Settings → Custom data (menu: "Create
+definition" → Content type "Metaobject") **only when a product uses the field**.
+Publish each metaobject to the storefront. Constrain each reference metafield
 to its named definition.
 
-| Metaobject | Fields | Notes |
+| Metaobject | Fields | Used for |
 | --- | --- | --- |
-| `a2z_content_item` | `heading` (single line, required), `body` (rich text, optional), `icon` (file reference, optional) | One entry = one list item |
-| `a2z_faq_item` | `question` (single line, required), `answer` (rich text, required) | Contract for future FAQ section |
-| `a2z_comparison_table` | `heading` (single line, optional), `intro` (rich text, optional), `rows` (list of references to `a2z_comparison_row`, required) | Contract; single reusable record |
-| `a2z_comparison_row` | `label` (single line, required), `product_value` (rich text, optional), `alternative_value` (rich text, optional) | Contract |
+| `a2z_content_item` | `heading` (single line, required), `body` (rich text, optional), `icon` (file reference, optional) | Shared list entries for statements, distinctions, quotes, outcomes |
+| `a2z_faq_item` | `question` (single line, required), `answer` (rich text, required) | FAQ entries (future consumer) |
+| `a2z_comparison_table` | `heading` (single line, optional), `intro` (rich text, optional), `rows` (list of references to `a2z_comparison_row`, required) | A single reusable comparison record |
+| `a2z_comparison_row` | `label` (single line, required), `product_value` (rich text, optional), `alternative_value` (rich text, optional) | One comparison row |
 
-Publish metaobjects to the storefront. If comparison requirements ever grow,
-revise the comparison metaobject deliberately — never store table markup or
-JSON in a product metafield.
+Operating rules:
 
-## E. Collections
+- One `a2z_content_item` per product per benefit/distinction/quote/result. Do
+  not share metaobjects across products — that causes cross-product
+  contamination when one product's entry is updated.
+- To update one product without affecting another: edit **that product's own
+  metaobjects** (list references are per-product). Never point two products at
+  the same benefit/testimonial entry.
+- Leave the field with **zero entries** rather than creating empty shell
+  metaobjects. Reference lists read as blank when nothing is selected. Do not
+  create placeholder "coming soon" entries.
+- If a definition becomes unused, unpublish its metaobjects and optionally
+  delete the definition; the theme renders nothing when fields are empty.
+- Never store FAQ/comparison/table markup or JSON inside a product metafield.
 
-The current merchandising model uses four collections, selectable anywhere a
-Collection setting exists — in particular the homepage **Category routing**
-section.
+## 6. Collections — merchandising architecture
+
+Four active products may be spread across any number of collections however the
+merchant chooses. The **category routing** section on the homepage is the
+current collection merchandising hub.
+
+Create/use collections:
 
 1. Admin → Products → Collections → Create collection (Manual or Automated).
-2. Add products via Admin normally (admin-selected, or by rules).
-3. In Theme Editor, open the category routing section and choose each collection
-   in the four collection slots. The internal settings are `home_collection`,
-   `car_bike_collection`, `collection_3`, `collection_4`; their editor labels
-   are merchant hints only — any collection can be placed in any slot.
-4. Replacing a collection later is a Theme Editor selection; no code changes.
+2. Name the collection (display name shown to visitors + the URL handle).
+3. Add a description and a collection image (used by the routing cards).
+4. Assign products via Admin (hand-picked or rules).
+5. In the Theme Editor, homepage **Category routing** section, choose each
+   collection in the four slots. Internal settings: `home_collection`,
+   `car_bike_collection`, `collection_3`, `collection_4`; the editor labels are
+   merchant-visible hints only — any collection may go in any slot.
+6. In the Theme Editor, homepage "Current finds" product-list: choose the
+   collection it reads (default `all`).
 
-Collection-agnostic behavior (verified in the theme):
+Rules:
 
-- Fewer than four populated collections: the section only renders slots that
-  have a collection with at least one product; other slots are skipped.
-- Empty collections: a slot is skipped until the collection has products.
-- No collections configured: the whole section renders nothing.
-- The store also works with one collection, none, or many; the four-collection
-  routing is merchandising, not a technical limit.
+- Fewer than four populated collections: only populated slots (collection with
+  ≥1 product) render.
+- Empty collections: a slot is skipped until it has products.
+- No collections configured: the routing section renders nothing.
+- Replacing a collection later = Theme Editor selection. No code changes.
+- Recommended homepage setup: 2×2 routing grid on desktop, 1 column on mobile.
+- Homepage collection ("Current finds") and category routing both remain
+  Shopify collection selectors — nothing about products is hard-coded.
 
-Other collection surfaces: the homepage "Current finds" section is a
-Shopify-collection selection (currently `all`), the collection template and
-the collection-list template are native and render whatever Shopify provides.
+## 7. Navigation
 
-## F. Navigation
+Menus are configured in **Admin → Content → Menus** (previously Online Store →
+Navigation). The theme reads menus from these settings; navigation is never
+hard-coded in theme code.
 
-Configure menus in **Admin → Online Store → Navigation**; the theme reads
-menus from these settings — do not hard-code destinations.
+Suggested main menu (adjust to the live catalog):
 
-Suggested structure (adjust to the catalog):
+- Home
+- Shop / All products → link to `collections/all` (or collection list `/collections`)
+- Curated collection links (the four current collections)
+- About, Contact as created
 
-- **Main menu (header):** Shop → link to a collection (or collection list
-  `/collections`); each current collection; About; Contact.
-- **Footer menu:** Policies (Shipping, Refund, Privacy, Terms), Contact,
-  and the newsletter/account areas as enabled.
+Footer menu:
 
-Native sections (header, footer, announcement bar) allow menus and links to be
-changed in the Theme Editor without code.
+- Contact, About
+- Shipping policy, Returns/Refund, Privacy policy, Terms, Refund policy
+- Social links where applicable
+- Account link (works with the configured customer-accounts mode)
 
-## G. Theme Editor setup
+Use dynamic store page/collection links in the menu picker (not raw URLs) so
+the menu stays correct if pages are renamed.
 
-All configuration below happens in the Theme Editor (Online Store → Themes →
-Customize). Defaults already ship; change only what the merchant must control.
+## 8. Homepage merchandising
 
-- **Homepage:** hero (category-neutral default copy), "Current finds"
-  product-list (set the Collection setting; max products and columns are
-  merchant controls), category routing (four collection slots). The homepage is
-  a brand + discovery + routing hub — not a fixed four-product page. Product
-  lists use Shopify-selected collections/products; no product is hard-coded.
-- **Collection / Search:** native templates; card block preset (media, review,
-  title, card intelligence, price, swatches) applies to every product
-  automatically.
-- **PDP:** one reusable architecture for all products — media gallery, details
-  group (review, title), promise, benefits, price, variant picker, buy buttons,
-  shipping & guarantee, disclosures, Problem→Desire, mechanism,
-  differentiators, testimonials, results, how-to-use, native description,
-  recommendations. Product-specific copy comes only from native product data
-  and the `thea2zcart` metafields. Block settings (heading text, which field
-  each intelligence block reads, which blocks appear) are merchant-editable in
-  the Theme Editor. Native variants/quantity/ATC/buy buttons/cart/checkout/
-  payment/sticky-ATC events are untouched.
-- **Awareness routes:** `education`, `problem-aware`, `solution-aware`, `offer`
-  templates are generic and configurable. Each intelligence block has a
-  Product setting and a Field setting; set the product and field in the Theme
-  Editor. Their CTAs route to `/collections/all` by default and can be changed
-  per button. Do not create product-specific landing pages.
-- **Reviews:** the review block renders only when a native rating is present;
-  its rating defaults exist only in Shopify visual-preview mode.
+The homepage is the **brand + discovery + routing hub** — not a fixed
+four-product page. Theme Editor (Online Store → Themes → Customize →
+Homepage):
 
-## H. Policies and trust foundation
+- Hero: category-neutral default copy stays as shipped. Replace only with real
+  brand copy; keep **one H1**.
+- "Current finds" product-list: choose collection, max products, columns (all
+  merchant settings).
+- Category routing: four collection slots (section 6).
+- Trust/proof appears only when genuine (see content-integrity rules).
 
-Create these in **Admin → Settings → Policies** and link them via the footer
-menu (section F). Policy text must reflect actual business rules entered by
-the merchant — never invented promises:
+Do **not** route all paid traffic to the homepage. Route traffic by intent:
 
-1. Shipping policy (carriers, rates, processing time, delivery expectations).
-2. Return / refund policy.
-3. Privacy policy.
-4. Terms of service.
-5. Refund policy (if distinct) and payment methods shown at checkout.
-6. Contact information and customer-support email (Admin → Settings → Contact).
-7. Taxes/duties handling as applicable.
+| Incoming traffic | Send to |
+| --- | --- |
+| Problem-aware | problem-aware page |
+| Solution-aware | solution-aware page |
+| Educational | education page |
+| Offer/discount | offer page |
+| Product-aware | product PDP |
+| Generic/category search | collection / search |
+| Direct/referral | homepage |
+| Returning customers | product / reorder journey |
 
-Product-specific shipping and guarantee *copy* can also be added via the
-`shipping_message` / `guarantee` metafields (section C) when it differs per
-product.
+## 9. PDP operating workflow
 
-## I. Analytics
+One reusable PDP architecture serves every product. No per-product templates.
+Configure blocks in **Theme Editor → Product → default product**; the same
+configuration applies to new products automatically.
 
-The theme already emits Shopify Standard Events through Shopify's storefront
-event pipeline (page viewed, product viewed, collection/list viewed, search,
-product selected, add-to-cart, cart view, checkout, purchase). **Do not alter
-the theme analytics layer** and do not add a `dataLayer` or duplicate events.
+Above the fold (populate per product in Admin/Theme Editor):
 
-Admin-side configuration:
+- Media gallery (native; media from Admin)
+- Review block (renders only when a genuine native rating exists)
+- Product name (native)
+- `promise` (PDP promise block)
+- `benefits` (PDP intelligence-list block, field = benefits)
+- Price (native)
+- Variant picker (native; add variants in Admin)
+- Buy buttons, quantity, dynamic checkout (native), sticky add-to-cart (native)
+- Reassurance (`shipping_message` / `guarantee` in the shipping & guarantee block)
 
-1. **Consent:** choose one consent mechanism (Shopify's built-in consent banner
-   or a consent app) so Standard Events are gated per customer consent. No
-   theme code is involved.
-2. **Shopify Customer Events:** in Admin, ensure customer-event sharing /
-   customer privacy thresholds are set per region requirements before sending
-   purchase data to marketing apps.
-3. **GA4 (if required):** add Google Analytics 4 through Sales channels /
-   Google (Web Pixel app) — it consumes the Shopify purchase/checkout events;
-   configure conversions on purchase.
-4. **Meta Pixel / Conversions API (if applicable):** set up via the Meta sales
-   channel in Admin and map its Pixel; the Conversions API is configured in
-   that channel, not in the theme.
-5. After going live, verify purchase/test events in GA4 and the Meta Events
-   Manager before launch is considered complete.
+Below the fold — add per block, showing **only where the product genuinely has
+data**: `problem`/`desire`, `mechanism`, `differentiators`, `testimonials`,
+`results`, `how_it_works`, native description, related-product recommendations.
 
-## J. Live QA
+Rules:
 
-Browser/preview QA must run on a store-connected preview before launch.
+- Do not force every block onto every product. A minimal product (title, price,
+  description, media) still produces a clean PDP because every optional block
+  self-hides when its field is empty.
+- Native functionality is never altered: variants, quantity, ATC, buy buttons,
+  cart, checkout, payment, sticky ATC, standard events.
 
-**Breakpoints:** large desktop (≥1440), desktop (1024), tablet (768), mobile
-(375), small mobile (320).
+## 10. Awareness journeys
 
-**Surfaces to test on each primary breakpoint:**
+Four generic, configurable landing templates exist and map to the intent flow:
+`education`, `problem-aware`, `solution-aware`, `offer`. The product-aware
+route is the native PDP. Configure each in the Theme Editor (page template),
+per block: a **Product** setting (which product) and a **Field** setting (which
+metafield). CTAs default to `/collections/all` and are merchant-configurable.
 
-Homepage; collection page; collection list (`/collections`); search; PDP;
-variant selection; Add to cart; quick add; sticky add-to-cart; cart page;
-cart drawer; mini-cart/icon states; cart→checkout handoff; 404; contact page;
-gift card page (if enabled); the four awareness pages; blog index (if blog
-enabled); article page; generic page; password page (pre-launch).
+- Each page has a hero + intelligence blocks + product list + a clear CTA.
+- All routes enter the same conversion system (same products, cart, checkout).
+- Do **not** create product-specific landing pages and do **not** make any
+  awareness route depend on a category.
 
-**Product scenarios:**
+## 11. Theme Editor quick reference
 
-- Add a brand-new product in Admin and confirm the PDP, cards, collection,
-  search, and home features render with and without theA2Zcart metafields.
-- Test with zero products, one product, four products, and many products —
-  no code change should ever be needed; the theme renders whatever Shopify
-  provides.
-- Test an unpublished product, a product with only a title, and a product with
-  full intelligence data.
+All normal storefront configuration is in **Online Store → Themes → Customize**:
 
-## K. Launch checklist
+- Header/footer/announcement bar: menus, social, newsletter, layout.
+- Homepage: hero, product list (collection, count, columns), category routing.
+- Product template: media layout, details column blocks, below-fold blocks.
+- Collection/search: card layout, filters, sorting, density.
+- Page templates: hero + blocks; awareness pages: intelligence blocks + CTAs.
+- Colors, typography, spacing, buttons: global theme settings.
 
-- [ ] Shop details, payments, shipping, taxes configured and matching policy text.
-- [ ] Customer accounts mode chosen; contact/support email live.
-- [ ] Consent banner / marketing preferences configured.
-- [ ] Product metafield definitions (`thea2zcart`) created; metaobject definitions created where used.
-- [ ] Every live product has correct title/description/media/price/inventory.
-- [ ] Required products have real intelligence metafields; none contain placeholder or invented content.
-- [ ] Collections created, products assigned; category routing slots set in Theme Editor; homepage list collection chosen.
-- [ ] Navigation menus (main + footer) built; policy pages created and linked.
-- [ ] Awareness pages configured (product + field per block) and reachable from navigation/links.
-- [ ] Gift card and blog toggles set as intended.
-- [ ] Analytics channels (GA4, Meta) and consent configured and test-purchase verified.
-- [ ] Live QA matrix (section J) passed on desktop and mobile.
-- [ ] SEO basics: homepage/collection/product titles and descriptions; single H1 per page; images have alt text.
-- [ ] Password page still on (or store marked ready) per launch plan.
+Preview every change at desktop and mobile widths before saving.
 
-## L. New-product / replacement workflow
+## 12. Policies, payments, shipping, tax
 
-To add, replace, or rotate a product:
+### Policies (real business terms — merchant must supply)
 
-1. Admin → Products → (Add product or edit an existing one).
-2. Complete title, description, media, price, variants, inventory, shipping.
-3. Publish to the Online Store.
-4. Add it to the intended collection(s).
-5. Populate its theA2Zcart metafields (real content only).
-6. If replacing an old hero product, either edit the existing product (its
-   intelligence updates automatically) or point the relevant Theme Editor
-   selections — collections and any product-linked blocks — at the new product.
-7. Preview the PDP, cards, and any awareness pages before publishing.
-8. Unpublish/delete the retired product from Admin when ready.
+Admin → Settings → Policies. Mark each **MERCHANT MUST PROVIDE ACTUAL BUSINESS TERMS**; never invent:
 
-Adding or replacing products requires **no theme code changes**. If a
-product-specific need ever appears that cannot be met by the reusable
-architecture, that is the exact moment to design a deliberate, generic section
-— not a per-product template.
+- Shipping policy — carriers, rates, processing time, delivery expectations.
+- Return/refund policy — window, conditions, how to start a return.
+- Privacy policy.
+- Terms of service.
+- Cancellation policy (if applicable).
+- Contact details, support email.
+- Payment methods accepted (mirrors Admin → Payments).
+- Taxes/duties handling (if applicable).
+
+Do not invent delivery times, return windows, guarantees, warranty periods, or
+support claims anywhere (policies or product fields must agree).
+
+### Payments / shipping / tax checklist
+
+- Payments: providers, capture vs. authorize, payment methods shown at checkout.
+- Shipping: zones and rates, carriers, packaging, fulfillment locations.
+- Taxes: merchant tax rules per region.
+- Markets (if used): sales channels map; currency/presentment.
+- Checkout: established page, order processing, post-purchase page — **remain
+  Shopify-native; no theme code**.
+- Order processing: confirmation emails, fulfillment statuses.
+- Inventory: track at locations, low-stock thresholds.
+- Locations: set at least one fulfillment location and reference it in shipping.
+
+## 13. Customer accounts
+
+Shopify-hosted customer accounts are used. **No `templates/customers/*` theme
+files are required** — do not create them. Configure:
+
+- Admin → Settings → Customers & accounts → choose account type.
+- Set whether order history/address books are available to customers.
+- Optionally surface the Account link in the header/footer menus.
+
+## 14. Analytics
+
+The theme's analytics layer is already complete and must not be modified:
+
+`snippets/scripts.liquid`, `assets/page-view-event.js`,
+`assets/view-event-elements.js`, `assets/standard-actions-override.js`,
+`layout/theme.liquid` (`content_for_header`) — all protected.
+
+It emits Shopify **Standard Events** covering the full journey:
+
+`page_view` → `product_view` → `collection/list_view` → `search` →
+`product_selection` → `add_to_cart` → `cart_view` → `checkout` → `purchase`
+
+Admin-side setup:
+
+1. **Consent first** (section 15).
+2. Shopify Customer Events: enable/harmonize per regional customer-privacy
+   thresholds before sending purchase data to marketing apps.
+3. GA4 (if required): add the Google/GA4 channel in Admin (Web Pixel app);
+   it consumes Shopify purchase/checkout events; configure the purchase
+   conversion.
+4. Meta Pixel / Conversions API (if applicable): set up via the Meta sales
+   channel; map the Pixel; CAPI is configured there, not in the theme.
+5. After launch, verify a live test order appears as a `purchase` event in GA4
+   and the Meta Events Manager.
+
+Do **not** add a `dataLayer`, duplicate events, or duplicate tracking scripts.
+
+## 15. Consent
+
+Checklist (merchant responsibility; the theme has no consent code):
+
+- Install/choose one consent mechanism — Shopify's built-in consent banner or a
+  consent app. This gates Standard Events per customer consent.
+- Configure analytics consent and marketing consent independently.
+- Confirm the banner shows before analytics fire, on all pages, on mobile.
+- Confirm consent state routes through to GA4/Meta so no event fires where
+  consent was refused.
+- Confirm compliance with regional requirements (e.g., EEA/UK GDPR) — legal
+  configuration is the merchant's responsibility; nothing here is legal advice.
+
+## 16. Email / post-purchase
+
+Launch checklist (Admin → Settings → Notifications; no theme automation):
+
+- Order confirmation
+- Shipping confirmation
+- Delivery notification
+- Refund/cancellation notifications
+- Abandoned-checkout emails if enabled
+- Post-purchase education (optional, real content only)
+- Review request after delivery (optional)
+- UGC request (optional, only where genuinely used)
+- Replenishment/reorder reminder where relevant
+
+Do not implement speculative automation in theme code.
+
+## 17. SEO
+
+- Homepage title + meta description (Admin → Online Store → Preferences).
+- Product page SEO title/description per product.
+- Collection SEO title/description per collection.
+- Page SEO per page.
+- Image alt text: fill product media alt text in Admin (theme already
+  fallbacks to product title).
+- Canonical URLs, sitemap, robots: native Shopify — do not duplicate.
+- Indexing: ensure public products not "noindex" before launch.
+- Google Search Console: verify the domain and submit the sitemap after launch.
+- Structured data: native Shopify product/collection markup preserved; do not
+  add custom schema; no SEO claims invented.
+
+## 18. Performance (preserved constraints)
+
+The repository stays at:
+
+- zero unnecessary custom JavaScript
+- responsive, lazy-loaded imagery where appropriate
+- no duplicate analytics
+- no unnecessary DOM duplication
+- no unnecessary third-party scripts
+
+Do not add speculative performance tooling. If something must be measured later,
+measure with real Lighthouse data on a store-connected preview.
+
+## 19. Accessibility / live QA remediation
+
+- Heading hierarchy: one H1 per page; sequence intact (H1 → H2 → H3).
+- Keyboard: full site operable with Tab; visible focus rings retained.
+- Button/link labels are descriptive (Theme Editor text).
+- Images have alt text (Admin media alt).
+- Form labels and error messages are native and visible.
+- Color contrast passes with the default palette; verify with any custom
+  colors added in Theme Editor.
+- Touch targets are thumb-friendly on mobile.
+- Drawer/modal/navigation close behavior is native and focus returns sensibly.
+
+## 20. Live QA matrix
+
+Run on a store-connected preview before launch (external validation gate — not
+executable in a headless environment).
+
+Viewports: large desktop (≥1440), desktop (1024), tablet (768), mobile (375),
+small mobile (320). Browsers where available: Chrome, Safari, Firefox, Edge.
+
+Surfaces, at minimum:
+
+Homepage, collection page, collection list (`/collections`), search, PDP,
+variants, Add to cart, quick add, sticky add-to-cart, cart page, cart drawer,
+mini-cart/icon, cart→checkout handoff, 404, contact page, gift card page,
+the four awareness pages, blog index, article page, generic page, password page
+(pre-launch).
+
+For each test verify: visual hierarchy, layout, spacing, typography, buttons,
+links, images, overflow, navigation, keyboard, focus, screen-reader semantics,
+forms, errors, empty states, loading states, variant behavior, cart behavior,
+checkout handoff. Record pass/fail + viewport + browser.
+
+### Mobile-first checks
+
+- No horizontal overflow at 320–375px.
+- No clipped text; long product titles wrap cleanly.
+- No tiny tap targets; buttons ≥ 44px effective.
+- Sticky ATC does not obscure content; it stays reachable.
+- Header/announcement bar and drawer open/close correctly.
+- Product cards and collection grid stack correctly.
+- PDP media gallery swipes/zooms correctly.
+- Forms usable on mobile; cart drawer works; checkout CTA remains visible.
+- Images do not create excessive layout shift (sizing attributes present).
+
+### Per-product live journey
+
+For each real product, once, before launch:
+
+1. Product exists in Admin and is published.
+2. Correct media, price, variants, inventory.
+3. Assigned to the intended collections.
+4. SEO filled (optional but recommended).
+5. Intelligence data populated where real content exists.
+6. PDP opens and renders correctly on desktop + mobile.
+7. Product card renders on homepage/collection/search.
+8. Search surfaces the product.
+9. Variant selection updates price/ATC.
+10. ATC works; cart drawer updates; cart page correct.
+11. Sticky ATC works.
+12. Checkout handoff opens Shopify checkout.
+13. No fabricated content appears anywhere.
+14. Blank optional fields produce no broken/empty sections.
+
+## 21. Product count stress (conceptual verification)
+
+Repository state supports all counts with **no code change** because nothing
+counts, names, or limits products:
+
+- **0 products:** homepage product list + category routing self-hide/empty;
+  collections/search show native empty states; CTAs remain valid.
+- **1–4 products:** standard rendering; routing shows populated slots.
+- **8 / 20+ products:** product-list `max products` settings and collection grid
+  are merchant display controls, not catalog caps; pagination is native.
+
+No maximum-product setting exists or may be added.
+
+## 22. Desktop/mobile independence
+
+Theme Editor exposes independent desktop/mobile controls for sections and
+blocks (e.g., columns, card size, spacing, mobile media layout). Use them to
+tune per breakpoint. The theme does **not** duplicate DOM or create separate
+code paths per device — it uses Horizon's responsive architecture.
+
+## 23. Launch checklist
+
+**PRE-LAUNCH**
+
+- [ ] Store details, currency, timezone
+- [ ] Payments configured
+- [ ] Shipping zones/rates + carrier/locations
+- [ ] Taxes and duties
+- [ ] Customer accounts mode chosen
+- [ ] Policies written from real business terms (shipping, returns, privacy, terms, refund)
+- [ ] Contact information + support email live
+- [ ] Domain active and primary (thea2zcart.com)
+- [ ] Navigation menus built (main + footer)
+- [ ] Collections created and products assigned
+- [ ] Products complete (media, price, variants, inventory, shipping, SEO)
+- [ ] Product intelligence populated where real; no placeholders
+- [ ] Homepage configured (hero, Current finds, category routing slots)
+- [ ] PDP blocks confirmed for all products
+- [ ] Awareness pages configured (product + field per block) + CTAs
+- [ ] Search verified
+- [ ] Cart + cart drawer + checkout handoff verified
+- [ ] Analytics channels (GA4, Meta) added; purchase event verified on a test order
+- [ ] Consent banner configured and verified
+- [ ] Email notifications (order, shipping, refund) configured
+- [ ] SEO basics + favicon + social links
+- [ ] Footer (menus, policies, newsletter, account)
+- [ ] Password/launch state decided (store currently protected by password page)
+
+**LIVE QA**
+
+- [ ] Desktop, tablet, mobile, small mobile (matrix, section 20)
+- [ ] Chrome, Safari, Firefox, Edge where available
+- [ ] Homepage, collection, search, PDP, ATC, cart, checkout, 404, contact
+- [ ] Awareness routes, blog/article, generic pages, password page
+- [ ] Per-product live journey passed (section 20)
+
+**FINAL**
+
+- [ ] Test order end-to-end (product → ATC → cart → checkout → payment → confirmation email)
+- [ ] Shipping flow verified
+- [ ] Refund/cancellation flow verified
+- [ ] Analytics events verified (page_view → … → purchase)
+- [ ] Consent behavior verified
+- [ ] Search indexing: Google Search Console connected; sitemap submitted
+- [ ] Remove the password page when ready
+- [ ] Final storefront review at desktop + mobile
+
+## 24. New-product replacement SOP
+
+**Remove old product**
+
+1. Unpublish/retire the old product in Admin.
+2. Remove it from its collections (replace with the new product there).
+3. Update merchandising references: homepage "Current finds" collection, category
+   routing slots, any Awareness-page Product settings that pointed at it.
+4. If the old product has public URLs worth keeping, create redirects (Admin →
+   URL redirects) to the replacement.
+
+**Add new product**
+
+1. Products → Add product → core data, media, price, variants, inventory,
+   shipping, SEO.
+2. Add to the appropriate collection(s).
+3. Populate optional theA2Zcart intelligence fields (real content only).
+4. Publish.
+
+**Then verify**: homepage, collection, search, PDP, mobile, desktop, ATC, cart,
+checkout handoff.
+
+**No theme code change is required.**
+
+## 25. Protected theme layer
+
+Do not modify these unless a proven, blocking defect exists (theme-engineering
+work is separate from store operation):
+
+`blocks/buy-buttons.liquid`, `assets/product-form.js`,
+`assets/variant-picker.js`, `assets/sticky-add-to-cart.js`,
+`assets/cart-drawer.js`, `assets/cart-icon.js`,
+`assets/component-cart-items.js`, `sections/product-information.liquid`,
+`snippets/scripts.liquid`, `assets/page-view-event.js`,
+`assets/view-event-elements.js`, `assets/standard-actions-override.js`,
+`layout/theme.liquid`, `sections/thea2zcart-category-routing.liquid`.
+
+## 26. Product-agnostic ground truth
+
+Everything a visitor sees for a product comes from: (1) Shopify native product
+data, (2) `thea2zcart` metafields, (3) Theme Editor block configuration. The
+theme contains **no** hard-coded product names, handles, IDs, categories,
+types, industries, use cases, journeys, claims, or product counts.**
